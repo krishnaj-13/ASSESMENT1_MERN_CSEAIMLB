@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="currency-converter.css">
+</head>
+<body>
+
+    <div class="converter-container">
+        <h1>Currency Converter</h1>
+        
+        <div class="converter-form">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" placeholder="Enter amount" required>
+
+            <label for="fromCurrency">From:</label>
+            <select id="fromCurrency">
+                <option value="INR">Indian Rupee</option>
+                <option value="USD">United States Dollar</option>
+                <option value="EUR">Euro</option>
+                <option value="AUD">Australian Dollar</option>
+                <option value="CAD">Canadian Dollar</option>
+                <option value="NZD">New Zealand Dollar</option>
+                <option value="BRL">Brazilian Real</option>
+                <option value="RUB">Russian Ruble</option>
+                <option value="ZAR">South African Rand</option>
+            </select>
+
+            <label for="toCurrency">To:</label>
+            <select id="toCurrency">
+                <option value="USD">United States Dollar</option>
+                <option value="INR">Indian Rupee</option>
+                <option value="EUR">Euro</option>
+                <option value="AUD">Australian Dollar</option>
+                <option value="CAD">Canadian Dollar</option>
+                <option value="NZD">New Zealand Dollar</option>
+                <option value="BRL">Brazilian Real</option>
+                <option value="RUB">Russian Ruble</option>
+                <option value="ZAR">South African Rand</option>
+            </select>
+
+            <button onclick="convert()">Convert</button>
+        </div>
+
+        <div class="result">
+            <p id="result">Result: </p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'YOUR_API_KEY';
+
+        function convert() {
+            var amount = parseFloat(document.getElementById('amount').value);
+            var fromCurrency = document.getElementById('fromCurrency').value;
+            var toCurrency = document.getElementById('toCurrency').value;
+
+            if (amount <= 0) {
+                document.getElementById('result').innerHTML = 'Please enter a valid amount';
+                return;
+            }
+
+            fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`)
+                .then(response => response.json())
+                .then(data => {
+                    var exchangeRate = data.rates[toCurrency];
+                    var result = (amount * exchangeRate).toFixed(2);
+
+                    document.getElementById('result').innerHTML = `Result: ${amount} ${fromCurrency} = ${result} ${toCurrency}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching exchange rates:', error);
+                    document.getElementById('result').innerHTML = 'Error fetching exchange rates';
+                });
+        }
+    </script>
+</body>
+</html>
